@@ -66,7 +66,7 @@ Then open http://localhost:5173/Pomodoro/
 - @vitejs/plugin-react: 5.1.2
 
 ## Deployment Status
-- Frontend: Not yet deployed (ready for GitHub Pages)
+- Frontend: ✅ Deployed to GitHub Pages at https://kystocks.github.io/pomodoro/
 - Backend: N/A (no backend for V1)
 
 ## Technical Debt

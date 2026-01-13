@@ -39,7 +39,7 @@ PomoFocus is a web-based Pomodoro timer built to help users maintain focus and p
 
 ## Live Demo
 
-[Coming Soon - Will be deployed to GitHub Pages]
+🚀 **[https://kystocks.github.io/pomodoro/](https://kystocks.github.io/pomodoro/)**
 
 ## Local Development
 
@@ -51,7 +51,7 @@ PomoFocus is a web-based Pomodoro timer built to help users maintain focus and p
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/Pomodoro.git
+git clone https://github.com/kystocks/pomodoro.git
 
 # Navigate to project directory
 cd Pomodoro
