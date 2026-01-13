@@ -1,5 +1,18 @@
 # PomoFocus Version History
 
+## Version 0.1.1 - January 13, 2026
+**Deployment Fix**
+
+### Fixed
+- Fixed GitHub Pages deployment showing empty page
+- Corrected base path in vite.config.js from '/Pomodoro/' to '/pomodoro/' to match repository URL case sensitivity
+- GitHub Pages serves from Linux servers where URLs are case-sensitive
+
+### Technical Details
+- Issue: Asset requests were going to `/Pomodoro/assets/...` (404) instead of `/pomodoro/assets/...`
+- Solution: Updated vite.config.js base path to match lowercase repository name
+- Rebuilt and redeployed to gh-pages branch
+
 ## Version 0.1.0 - January 13, 2026
 **Initial Project Setup - Core Pomodoro Timer Complete**
 
