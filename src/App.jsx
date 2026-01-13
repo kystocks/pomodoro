@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import Timer from './components/Timer/Timer'
+import SquareTimer from './components/SquareTimer/SquareTimer'
+import AnalogTimer from './components/AnalogTimer/AnalogTimer'
 import Controls from './components/Controls/Controls'
 import Settings from './components/Settings/Settings'
 import SessionCounter from './components/SessionCounter/SessionCounter'
@@ -24,6 +25,7 @@ function App() {
   const [isActive, setIsActive] = useState(false)
   const [completedPomodoros, setCompletedPomodoros] = useState(0)
   const [shouldPlaySound, setShouldPlaySound] = useState(false)
+  const [showAnalogClock, setShowAnalogClock] = useState(false)
 
   // Get duration for current mode
   const getCurrentDuration = useCallback(() => {
@@ -149,11 +151,38 @@ function App() {
       </header>
 
       <main className={styles.main}>
-        <Timer
-          timeRemaining={timeRemaining}
-          currentMode={currentMode}
-          isActive={isActive}
-        />
+        <div className={styles.timerToggle}>
+          <button
+            onClick={() => setShowAnalogClock(false)}
+            className={!showAnalogClock ? styles.active : ''}
+            aria-pressed={!showAnalogClock}
+          >
+            Digital
+          </button>
+          <button
+            onClick={() => setShowAnalogClock(true)}
+            className={showAnalogClock ? styles.active : ''}
+            aria-pressed={showAnalogClock}
+          >
+            Analog
+          </button>
+        </div>
+
+        {showAnalogClock ? (
+          <AnalogTimer
+            timeRemaining={timeRemaining}
+            totalDuration={getCurrentDuration()}
+            currentMode={currentMode}
+            isActive={isActive}
+          />
+        ) : (
+          <SquareTimer
+            timeRemaining={timeRemaining}
+            totalDuration={getCurrentDuration()}
+            currentMode={currentMode}
+            isActive={isActive}
+          />
+        )}
 
         <Controls
           isActive={isActive}

@@ -1,0 +1,134 @@
+.squareTimer {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.modeIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-lg);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.modeDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.work .modeDot {
+  background-color: var(--color-primary);
+}
+
+.shortBreak .modeDot {
+  background-color: var(--color-success);
+}
+
+.longBreak .modeDot {
+  background-color: var(--color-warning);
+}
+
+.clockContainer {
+  position: relative;
+  max-width: 420px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.clockFace {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5));
+}
+
+/* Square frame background and rim */
+.outerRim {
+  fill: #1c1c1e;
+}
+
+.background {
+  fill: #000000;
+}
+
+/* Progress stroke - colored line showing elapsed time */
+.progressStroke {
+  stroke-width: 24;
+  opacity: 1;
+}
+
+.workStroke {
+  stroke: #ff453a;
+}
+
+.shortBreakStroke {
+  stroke: #32d74b;
+}
+
+.longBreakStroke {
+  stroke: #ff9f0a;
+}
+
+/* Digital display in center of clock */
+.digitalDisplay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.digitalDisplay time {
+  display: block;
+  font-size: 4rem;
+  font-weight: 300;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  letter-spacing: -0.02em;
+}
+
+.status {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 500;
+  margin-top: var(--spacing-md);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .clockContainer {
+    max-width: 360px;
+    padding: var(--spacing-md);
+  }
+
+  .digitalDisplay time {
+    font-size: 3rem;
+  }
+
+  .modeIndicator {
+    font-size: 0.75rem;
+  }
+
+  .status {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .clockContainer {
+    max-width: 300px;
+  }
+
+  .digitalDisplay time {
+    font-size: 2.5rem;
+  }
+}
