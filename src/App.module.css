@@ -1,0 +1,63 @@
+.app {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+}
+
+.main {
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-xl);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.keyboardHints {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.keyboardHints kbd {
+  display: inline-block;
+  padding: 2px 8px;
+  background-color: var(--color-background);
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.875rem;
+  margin: 0 2px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .main {
+    padding: var(--spacing-lg);
+  }
+
+  .keyboardHints {
+    font-size: 0.75rem;
+  }
+}
