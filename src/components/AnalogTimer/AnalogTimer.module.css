@@ -56,6 +56,23 @@
   fill: #f5f5f5;
 }
 
+/* Elapsed time pie slice fill */
+.elapsedSlice {
+  opacity: 0.2;
+}
+
+.workSlice {
+  fill: #d95550;
+}
+
+.shortBreakSlice {
+  fill: #4caf50;
+}
+
+.longBreakSlice {
+  fill: #ff9800;
+}
+
 /* Tick marks */
 .smallTick {
   stroke: #333;
@@ -78,21 +95,39 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Clock hand */
-.hand {
+/* Minute hand */
+.minuteHand {
   stroke-width: 4;
   stroke-linecap: round;
 }
 
-.workHand {
+.workMinuteHand {
   stroke: #d95550;
 }
 
-.shortBreakHand {
+.shortBreakMinuteHand {
   stroke: #4caf50;
 }
 
-.longBreakHand {
+.longBreakMinuteHand {
+  stroke: #ff9800;
+}
+
+/* Second hand */
+.secondHand {
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.workSecondHand {
+  stroke: #d95550;
+}
+
+.shortBreakSecondHand {
+  stroke: #4caf50;
+}
+
+.longBreakSecondHand {
   stroke: #ff9800;
 }
 

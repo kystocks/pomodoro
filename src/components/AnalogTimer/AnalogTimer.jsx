@@ -14,11 +14,62 @@ function AnalogTimer({ timeRemaining, totalDuration, currentMode, isActive }) {
   // Calculate angle for the progress arc (starts at top, goes clockwise)
   const angle = (percentComplete / 100) * 360
 
-  // Generate minute markers (0, 5, 10, 15, ..., 55)
+  // Generate SVG path for elapsed time pie slice (counterclockwise from top)
+  const createElapsedSlice = () => {
+    if (percentComplete === 0) return ''
+
+    const radius = 138 // Match the background circle radius
+
+    // Calculate where the minute hand is (based on remaining time)
+    const totalMinutes = Math.ceil(totalDuration / 60)
+    const remainingMinutes = timeRemaining / 60
+    const handAngle = -90 + (remainingMinutes / totalMinutes) * 360
+
+    const startAngle = -90 // Start at top (12 o'clock / max value)
+    const endAngle = handAngle // End where minute hand is
+
+    // Convert to radians
+    const startRad = startAngle * Math.PI / 180
+    const endRad = endAngle * Math.PI / 180
+
+    // Calculate start and end points on the circle
+    const startX = 150 + radius * Math.cos(startRad)
+    const startY = 150 + radius * Math.sin(startRad)
+    const endX = 150 + radius * Math.cos(endRad)
+    const endY = 150 + radius * Math.sin(endRad)
+
+    // The arc angle is simply the elapsed angle
+    // Large arc flag is 1 when elapsed time > 50%
+    const largeArcFlag = angle > 180 ? 1 : 0
+
+    // Create a pie slice: center -> top -> arc counterclockwise to hand -> back to center
+    return `M 150 150 L ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${endX} ${endY} Z`
+  }
+
+  // Generate minute markers dynamically based on total duration
   const minuteMarkers = useMemo(() => {
     const markers = []
-    for (let i = 0; i <= 55; i += 5) {
-      const angle = (i / 60) * 360 - 90 // -90 to start at top
+    const totalMinutes = Math.ceil(totalDuration / 60)
+    const maxValue = totalMinutes
+
+    // Determine marker interval based on total minutes
+    let markerInterval
+    if (maxValue <= 5) {
+      markerInterval = 1 // 5 minutes or less: show every minute
+    } else if (maxValue % 5 === 0) {
+      markerInterval = 5 // Divisible by 5: show every 5 minutes
+    } else if (maxValue % 2 === 0) {
+      markerInterval = 2 // Even but not divisible by 5: show every 2 minutes
+    } else {
+      markerInterval = 1 // Odd: show every minute
+    }
+
+    for (let i = 0; i <= maxValue; i += markerInterval) {
+      // Skip 0 and only show up to maxValue
+      if (i === 0 || i > maxValue) continue
+
+      // Position: top is maxValue, increases clockwise from there
+      const angle = (i / maxValue) * 360 - 90 // -90 to start at top
       const radius = 120
       const x = 150 + radius * Math.cos(angle * Math.PI / 180)
       const y = 150 + radius * Math.sin(angle * Math.PI / 180)
@@ -30,13 +81,16 @@ function AnalogTimer({ timeRemaining, totalDuration, currentMode, isActive }) {
       })
     }
     return markers
-  }, [])
+  }, [totalDuration])
 
-  // Generate tick marks around the clock
+  // Generate tick marks around the clock based on total duration
   const tickMarks = useMemo(() => {
     const marks = []
-    for (let i = 0; i < 60; i++) {
-      const angle = (i / 60) * 360 - 90
+    const totalMinutes = Math.ceil(totalDuration / 60)
+    const maxValue = totalMinutes
+
+    for (let i = 0; i <= maxValue; i++) {
+      const angle = (i / maxValue) * 360 - 90
       const isLargeTick = i % 5 === 0
       const innerRadius = isLargeTick ? 105 : 110
       const outerRadius = 115
@@ -52,19 +106,30 @@ function AnalogTimer({ timeRemaining, totalDuration, currentMode, isActive }) {
       })
     }
     return marks
-  }, [])
+  }, [totalDuration])
 
-  // Calculate hand position (points to remaining time)
-  // Hand should point to the current position on the clock face
-  const handAngle = -90 + (360 - angle) // Start at top, rotate counterclockwise with remaining time
-  const handLength = 70
-  const handX = 150 + handLength * Math.cos(handAngle * Math.PI / 180)
-  const handY = 150 + handLength * Math.sin(handAngle * Math.PI / 180)
+  // Calculate minute hand position (points to remaining time on dynamically scaled clock)
+  const remainingMinutes = timeRemaining / 60
+  const totalMinutes = Math.ceil(totalDuration / 60)
+  const maxValue = totalMinutes
+
+  // Minute hand should point to remaining time on the scaled clock
+  const minuteHandAngle = -90 + (remainingMinutes / maxValue) * 360 // Start at top, go clockwise
+  const minuteHandLength = 70
+  const minuteHandX = 150 + minuteHandLength * Math.cos(minuteHandAngle * Math.PI / 180)
+  const minuteHandY = 150 + minuteHandLength * Math.sin(minuteHandAngle * Math.PI / 180)
+
+  // Calculate second hand position (completes one rotation per minute)
+  const seconds = timeRemaining % 60
+  const secondHandAngle = -90 + (seconds / 60) * 360 // Start at top, go clockwise
+  const secondHandLength = 90
+  const secondHandX = 150 + secondHandLength * Math.cos(secondHandAngle * Math.PI / 180)
+  const secondHandY = 150 + secondHandLength * Math.sin(secondHandAngle * Math.PI / 180)
 
   // Format time as MM:SS for digital display
   const minutes = Math.floor(timeRemaining / 60)
-  const seconds = timeRemaining % 60
-  const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+  const displaySeconds = timeRemaining % 60
+  const formattedTime = `${String(minutes).padStart(2, '0')}:${String(displaySeconds).padStart(2, '0')}`
 
   // Get mode label
   const modeLabel = MODE_LABELS[currentMode] || 'Work Time'
@@ -78,9 +143,25 @@ function AnalogTimer({ timeRemaining, totalDuration, currentMode, isActive }) {
 
       <div className={`${styles.clockContainer} ${styles[currentMode]}`}>
         <svg viewBox="0 0 300 300" className={styles.clockFace}>
+          {/* Define clip path to constrain pie slice to clock face */}
+          <defs>
+            <clipPath id="clockClip">
+              <circle cx="150" cy="150" r="138" />
+            </clipPath>
+          </defs>
+
           {/* Background circle */}
           <circle cx="150" cy="150" r="145" className={styles.outerRim} />
           <circle cx="150" cy="150" r="138" className={styles.background} />
+
+          {/* Elapsed time pie slice */}
+          {percentComplete > 0 && (
+            <path
+              d={createElapsedSlice()}
+              className={`${styles.elapsedSlice} ${styles[`${currentMode}Slice`]}`}
+              clipPath="url(#clockClip)"
+            />
+          )}
 
           {/* Tick marks */}
           {tickMarks.map((mark, i) => (
@@ -108,13 +189,22 @@ function AnalogTimer({ timeRemaining, totalDuration, currentMode, isActive }) {
             </text>
           ))}
 
-          {/* Clock hand pointing to current time */}
+          {/* Minute hand pointing to remaining minutes */}
           <line
             x1="150"
             y1="150"
-            x2={handX}
-            y2={handY}
-            className={`${styles.hand} ${styles[`${currentMode}Hand`]}`}
+            x2={minuteHandX}
+            y2={minuteHandY}
+            className={`${styles.minuteHand} ${styles[`${currentMode}MinuteHand`]}`}
+          />
+
+          {/* Second hand ticking away the seconds */}
+          <line
+            x1="150"
+            y1="150"
+            x2={secondHandX}
+            y2={secondHandY}
+            className={`${styles.secondHand} ${styles[`${currentMode}SecondHand`]}`}
           />
 
           {/* Center circle for hand pivot */}
